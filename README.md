@@ -15,15 +15,10 @@ Since this is a course in distributed systems, we want it to have “interesting
 • The system must support multiple, autonomous agents (either human or automated) contending for shared resources and performing real-time updates to some form of shared state.
 • The state of the system should be distributed across multiple client or server nodes.
 • The system should be robust
-• The system should be able to continue operation even if one of the participant nodes
-crashes.
-• It should be possible to recover the state of a node following a crash, so that it can
-resume operation.
-• You may use any of the packages in the Python (or comparable packages in whatever
-language you choose.)
+• The system should be able to continue operation even if one of the participant nodes crashes.
+• It should be possible to recover the state of a node following a crash, so that it can resume operation.
+• You may use any of the packages in the Python (or comparable packages in whatever language you choose.)
 • You are allowed to use external packages to support the application or user interface.
-
-A few resources to get you started if this is your first Flutter project:
 
 ## Will probably use
 

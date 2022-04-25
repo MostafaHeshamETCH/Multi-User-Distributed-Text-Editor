@@ -1,23 +1,27 @@
 export 'utils.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:routemaster/routemaster.dart';
 
-class MultiUserTextEditor extends StatelessWidget {
+import 'navigation/routes.dart';
+
+class MultiUserTextEditor extends ConsumerStatefulWidget {
   const MultiUserTextEditor({Key? key}) : super(key: key);
 
   @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _MultiUserTextEditorState();
+}
+
+class _MultiUserTextEditorState extends ConsumerState<MultiUserTextEditor> {
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Multi-User Text Editor',
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Multi-User Text Editor'),
-        ),
-        body: const Center(
-          child: Text('Hello World'),
-        ),
-      ),
+    return MaterialApp.router(
+      routerDelegate: RoutemasterDelegate(routesBuilder: (context) {
+        return routesLoggedOut;
+      }),
+      routeInformationParser: const RoutemasterParser(),
     );
   }
 }
