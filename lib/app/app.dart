@@ -18,6 +18,7 @@ class _MultiUserTextEditorState extends ConsumerState<MultiUserTextEditor> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       routerDelegate: RoutemasterDelegate(routesBuilder: (context) {
         return routesLoggedOut;
       }),

@@ -17,6 +17,7 @@ dependencies:
   flutter_riverpod: ^1.0.3
   routemaster: ^1.0.0
   appwrite: ^4.0.2
+  equatable: ^2.0.3
 
 dev_dependencies:
   flutter_test:

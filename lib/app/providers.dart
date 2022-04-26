@@ -1,7 +1,9 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../repositories/repositories.dart';
 import 'constants.dart';
+import 'state/state.dart';
 
 // just organize providers for easy access
 abstract class Dependency {
@@ -9,6 +11,18 @@ abstract class Dependency {
   static Provider<Database> get database => _databaseProvider;
   static Provider<Account> get account => _accountProvider;
   static Provider<Realtime> get realtime => _realtimeProvider;
+}
+
+// AuthRepo Provider
+// auth object can be used to get user id or all other info
+abstract class Repository {
+  static Provider<AuthRepository> get auth => AuthRepository.provider;
+}
+
+// expose auth provider to listen on auth state
+abstract class AppState {
+  static StateNotifierProvider<AuthService, AuthState> get auth =>
+      AuthService.provider;
 }
 
 // clients that comes from appWrite

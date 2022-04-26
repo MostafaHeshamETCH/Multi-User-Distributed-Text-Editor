@@ -19,6 +19,8 @@ class AuthRepository with RepositoryExceptionMixin {
 
   Account get _account => _reader(Dependency.account);
 
+  // register
+  // _account => pre-implemented class in implemented in AppWrite
   Future<User> create({
     required String email,
     required String password,
@@ -26,6 +28,7 @@ class AuthRepository with RepositoryExceptionMixin {
   }) {
     return exceptionHandler(
       _account.create(
+        // unique is auto-generated id from AppWrite
         userId: 'unique()',
         email: email,
         password: password,
@@ -34,6 +37,7 @@ class AuthRepository with RepositoryExceptionMixin {
     );
   }
 
+  // sign in
   Future<Session> createSession({
     required String email,
     required String password,
@@ -49,6 +53,7 @@ class AuthRepository with RepositoryExceptionMixin {
     );
   }
 
+  // sign out
   Future<void> deleteSession({required String sessionId}) {
     return exceptionHandler(
       _account.deleteSession(sessionId: sessionId),
