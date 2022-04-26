@@ -1,3 +1,5 @@
+// ignore_for_file: overridden_fields
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -144,13 +146,6 @@ class TransitionPage<T> extends TransitionBuilderPage<T> {
   final bool opaque;
 }
 
-/// A page that can be subclassed to provide push and pop animations.
-///
-/// When a page is pushed, [buildPushTransition] is called, and the returned
-/// transition is used to animate the page onto the screen.
-///
-/// When a page is popped, [buildPopTransition] is called, and the returned
-/// transition is used to animate the page off the screen.
 abstract class TransitionBuilderPage<T> extends Page<T> {
   /// Initialize a page that provides separate push and pop animations.
   const TransitionBuilderPage({
@@ -169,28 +164,12 @@ abstract class TransitionBuilderPage<T> extends Page<T> {
           restorationId: restorationId,
         );
 
-  /// Called when this page is pushed, returns a [PageTransition] to configure
-  /// the push animation.
-  ///
-  /// Return `PageTransition.none` for an immediate push with no animation.
   PageTransition buildPushTransition(BuildContext context);
-
-  /// Called when this page is popped, returns a [PageTransition] to configure
-  /// the pop animation.
-  ///
-  /// Return `PageTransition.none` for an immediate pop with no animation.
   PageTransition buildPopTransition(BuildContext context);
 
-  /// The content to be shown in the [Route] created by this page.
   final Widget child;
-
-  /// {@macro flutter.widgets.ModalRoute.maintainState}
   final bool maintainState;
-
-  /// {@macro flutter.widgets.PageRoute.fullscreenDialog}
   final bool fullscreenDialog;
-
-  /// {@macro flutter.widgets.TransitionRoute.opaque}
   final bool opaque;
 
   @override
@@ -199,20 +178,12 @@ abstract class TransitionBuilderPage<T> extends Page<T> {
   }
 }
 
-/// The route created by by [TransitionBuilderPage], which delegates push and
-/// pop transition animations to that page.
 class TransitionBuilderPageRoute<T> extends PageRoute<T> {
-  /// Initialize a route which delegates push and pop transition animations to
-  /// the provided [page].
   TransitionBuilderPageRoute({
     required TransitionBuilderPage<T> page,
   }) : super(settings: page);
 
   TransitionBuilderPage<T> get _page => settings as TransitionBuilderPage<T>;
-
-  /// This value is not used.
-  ///
-  /// The actual durations are provides by the [PageTransition] objects.
   @override
   Duration get transitionDuration => Duration.zero;
 
