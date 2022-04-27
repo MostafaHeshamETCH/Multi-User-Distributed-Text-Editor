@@ -29,7 +29,7 @@ class _InitialPage extends ConsumerStatefulWidget {
 class _InitialPageState extends ConsumerState<_InitialPage> {
   Future<void> _signIn() async {
     await ref.read(LoginController.notifier).createSession(
-          email: 'test3@test.com',
+          email: 'account@test.com',
           password: '12345678',
         );
   }

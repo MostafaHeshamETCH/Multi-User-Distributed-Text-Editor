@@ -1,11 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
-
-// import '../components/controller_state_base.dart';
-import 'state/state_base.dart';
 
 final logger = Logger('App');
 
@@ -28,35 +24,4 @@ void setupLogger() {
       debugPrintStack(stackTrace: record.stackTrace);
     }
   });
-
-  // extension RefX on WidgetRef {
-  // void errorStateListener(
-  //   BuildContext context,
-  //   ProviderListenable<StateBase> provider,
-  // ) {
-  //   listen<StateBase>(provider, ((previous, next) {
-  //     final message = next.error?.message;
-  //     if (next.error != previous?.error &&
-  //         message != null &&
-  //         message.isNotEmpty) {
-  //       ScaffoldMessenger.of(context)
-  //           .showSnackBar(SnackBar(content: Text(message)));
-  //     }
-  //   }));
-  // }
-
-  // void errorControllerStateListener(
-  //   BuildContext context,
-  //   ProviderListenable<ControllerStateBase> provider,
-  // ) {
-  //   listen<ControllerStateBase>(provider, ((previous, next) {
-  //     final message = next.error?.message;
-  //     if (next.error != previous?.error &&
-  //         message != null &&
-  //         message.isNotEmpty) {
-  //       ScaffoldMessenger.of(context)
-  //           .showSnackBar(SnackBar(content: Text(message)));
-  //     }
-  //   }));
-  // }
 }
