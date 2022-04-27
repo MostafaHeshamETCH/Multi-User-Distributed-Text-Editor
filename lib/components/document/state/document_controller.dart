@@ -63,7 +63,9 @@ class DocumentController extends StateNotifier<DocumentState> {
         isSavedRemotely: true,
       );
 
-      state.quillController?.addListener(_quillControllerUpdate);
+      state.quillController?.addListener(
+          _quillControllerUpdate); // this listener is placed to force the controller
+      // to be updated each time any new text is changed in the document
     } on RepositoryException catch (e) {
       state = state.copyWith(error: AppError(message: e.message));
     }
@@ -74,6 +76,8 @@ class DocumentController extends StateNotifier<DocumentState> {
     _debounceSave();
   }
 
+  // debounce time is set to 2 seconds so not each element updated is saved with a separate update request to database,
+  //yet multiple changes are cached locally then saved remotely each 2 seconds
   void _debounceSave({Duration duration = const Duration(seconds: 2)}) {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(duration, () {
@@ -96,7 +100,7 @@ class DocumentController extends StateNotifier<DocumentState> {
     if (state.documentPageData == null || state.quillDocument == null) {
       logger.severe('Cannot save document, doc state is empty');
       state = state.copyWith(
-        error: AppError(message: 'Cannot save document, state is empty'),
+        error: AppError(message: 'Cannot save document, doc state is empty'),
       );
     }
     state = state.copyWith(
@@ -108,7 +112,8 @@ class DocumentController extends StateNotifier<DocumentState> {
         documentId: state.id,
         documentPage: state.documentPageData!,
       );
-      state = state.copyWith(isSavedRemotely: true);
+      state = state.copyWith(
+          isSavedRemotely: true); // saved immediately to database server
     } on RepositoryException catch (e) {
       state = state.copyWith(
         error: AppError(message: e.message),
