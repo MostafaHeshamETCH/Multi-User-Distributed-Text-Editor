@@ -1,10 +1,11 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../app/app.dart';
 import '../app/constants.dart';
 import '../app/providers.dart';
 import '../models/models.dart';
-import 'repository_exception.dart';
+import 'repositories.dart';
 
 final _databaseRepositoryProvider = Provider<DatabaseRepository>((ref) {
   return DatabaseRepository(ref.read);
@@ -17,6 +18,8 @@ class DatabaseRepository with RepositoryExceptionMixin {
 
   static Provider<DatabaseRepository> get provider =>
       _databaseRepositoryProvider;
+
+  Realtime get _realtime => _read(Dependency.realtime);
 
   Database get _database => _read(Dependency.database);
 
@@ -78,5 +81,41 @@ class DatabaseRepository with RepositoryExceptionMixin {
         data: documentPage.toMap(),
       ),
     );
+  }
+
+  Future<void> updateDelta({
+    required String pageId,
+    required DeltaData deltaData,
+  }) {
+    return exceptionHandler(
+      _database.updateDocument(
+        collectionId: CollectionNames.delta,
+        documentId: pageId,
+        data: deltaData.toMap(),
+      ),
+    );
+  }
+
+  /*
+    subscribe to the database collection containing the document data
+    in AppWrite database server running on Docker
+
+    return a stream of realtime subscription events
+  */
+  RealtimeSubscription subscribeToPage({required String pageId}) {
+    try {
+      return _realtime
+          .subscribe(['${CollectionNames.deltaDocumentsPath}.$pageId']);
+    } on AppwriteException catch (e) {
+      logger.warning(e.message, e);
+      throw RepositoryException(
+          message: e.message ?? 'An undefined error occurred');
+    } on Exception catch (e, st) {
+      logger.severe('Error subscribing to page changes', e, st);
+      throw RepositoryException(
+          message: 'Error subscribing to page changes',
+          exception: e,
+          stackTrace: st);
+    }
   }
 }
