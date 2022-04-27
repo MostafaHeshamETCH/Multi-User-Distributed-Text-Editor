@@ -16,7 +16,10 @@ abstract class Dependency {
 // AuthRepo Provider
 // auth object can be used to get user id or all other info
 abstract class Repository {
-  static Provider<AuthRepository> get auth => AuthRepository.provider;
+  static Provider<AuthRepository> get auth =>
+      AuthRepository.provider; // expose auth provider
+  static Provider<DatabaseRepository> get database =>
+      DatabaseRepository.provider; // expose database provider
 }
 
 // expose auth provider to listen on auth state
