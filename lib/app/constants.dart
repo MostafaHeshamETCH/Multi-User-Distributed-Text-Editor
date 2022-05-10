@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const appwriteEndpoint = 'http://www.etch-da.live/v1';
+const appwriteEndpoint = 'https://etch-da.live/v1';
 const appwriteProjectId = '627980b0394c14f6497d';
 
 const kPrimaryColor = Color(0xFF041C32);
