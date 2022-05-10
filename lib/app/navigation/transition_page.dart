@@ -3,6 +3,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+/*
+  PageTransition Class is used for implementing different page popping transitions implemented in different OS: 
+    - PageTransitionsBuilder: configuring the animation that will be used in the documents. 
+    - Duration: the time taken by the animation to run. 
+    - _NoPageTransition: a page tranistion without any animation. 
+    - _FadeUpwardsPageTransition: using the fade animation implemented in android. 
+    - _CupertinoPageTransition: using the slide animation implemented in iOS. 
+    _ZoomPageTransition: using a the zooming animation implemented in Android 10. 
+*/
 abstract class PageTransition {
   const PageTransition();
 
@@ -14,6 +23,11 @@ abstract class PageTransition {
   static const PageTransition cupertino = _CupertinoPageTransition();
   static const PageTransition zoom = _ZoomPageTransition();
 
+  /*
+    The following function checks to see which platform the text editor is running on, using
+    a switch case, and upon which return the animation specified for that platform. If the editor
+    is running on a web browser then no animation will be used. 
+  */
   static PageTransition platformDefault(TargetPlatform platform) {
     if (kIsWeb) {
       return PageTransition.none;

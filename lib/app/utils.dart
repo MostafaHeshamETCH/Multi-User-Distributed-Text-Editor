@@ -3,7 +3,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
-final logger = Logger('App');
+/* From utils class we're using the logging class for setting up a customized logger used for displaying some messages for the user: 
+            - INFO
+            - SEVERE
+            - WARNING
+*/
+final logger = Logger('App'); 
 
 void setupLogger() {
   Logger.root.level = Level.ALL;

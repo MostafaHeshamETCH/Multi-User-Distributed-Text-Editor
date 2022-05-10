@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/constants.dart';
 import 'login_controller.dart';
 
+//Create the layout of the login page. 
 class InitialPage extends StatelessWidget {
   const InitialPage({Key? key}) : super(key: key);
 
@@ -17,6 +18,7 @@ class InitialPage extends StatelessWidget {
   }
 }
 
+
 class _InitialPage extends ConsumerStatefulWidget {
   const _InitialPage({Key? key}) : super(key: key);
 
@@ -24,6 +26,7 @@ class _InitialPage extends ConsumerStatefulWidget {
   ConsumerState<_InitialPage> createState() => _InitialPageState();
 }
 
+//Dummy account for the login page.
 class _InitialPageState extends ConsumerState<_InitialPage> {
   Future<void> _signIn() async {
     await ref.read(LoginController.notifier).createSession(
@@ -32,6 +35,7 @@ class _InitialPageState extends ConsumerState<_InitialPage> {
         );
   }
 
+//The design of the login page where the width, height, and decoration are specified. 
   @override
   Widget build(BuildContext context) {
     return Column(

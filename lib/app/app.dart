@@ -21,6 +21,12 @@ class MultiUserTextEditor extends ConsumerStatefulWidget {
       _MultiUserTextEditorState();
 }
 
+/*
+  From Riverpod we created a new stateful consumer widget. 
+  This widget is used to generate the white window used as a background. 
+*/
+
+// 
 class _MultiUserTextEditorState extends ConsumerState<MultiUserTextEditor> {
   @override
   Widget build(BuildContext context) {
@@ -30,6 +36,12 @@ class _MultiUserTextEditorState extends ConsumerState<MultiUserTextEditor> {
         color: Colors.white,
       );
     }
+
+    /* returns the route of the pages created in the route file based on the output
+    of the inline if condition below. If the user is authenticates then the loggedIn
+    page will be redirected else the loggedout page will be redirect. 
+    
+    */
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerDelegate: RoutemasterDelegate(routesBuilder: (context) {
