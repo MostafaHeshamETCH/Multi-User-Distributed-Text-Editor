@@ -22,8 +22,8 @@ class _NewDocumentPageState extends ConsumerState<NewDocumentPage> {
 
   @override
   void initState() {
-    super.initState();
     _createNewPage();
+    super.initState();
   }
 
   Future<void> _createNewPage() async {
@@ -32,6 +32,7 @@ class _NewDocumentPageState extends ConsumerState<NewDocumentPage> {
       await ref.read(Repository.database).createNewPage(
             documentId: documentId,
             owner: ref.read(AppState.auth).user!.$id,
+            // owner: '627982448ae239ffbd28',
           );
 
       Routemaster.of(context).push('${AppRoutes.document}/$documentId');

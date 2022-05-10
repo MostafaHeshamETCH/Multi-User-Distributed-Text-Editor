@@ -1,7 +1,5 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:routemaster/routemaster.dart';
 
 import '../../../app/constants.dart';
 import 'login_controller.dart';
@@ -29,45 +27,53 @@ class _InitialPage extends ConsumerStatefulWidget {
 class _InitialPageState extends ConsumerState<_InitialPage> {
   Future<void> _signIn() async {
     await ref.read(LoginController.notifier).createSession(
-          email: 'account@test.com',
+          email: 'onlyuser@app.com',
           password: '12345678',
         );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: TextButton(
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 30),
-          height: 60,
-          width: MediaQuery.of(context).size.width - (2.5 * 250),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: kPrimaryColor,
-            borderRadius: BorderRadius.circular(99),
-            boxShadow: [
-              BoxShadow(
-                color: kPrimaryColor.withOpacity(0.20),
-                blurRadius: 22.0,
-                offset: const Offset(
-                  0,
-                  10,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const Text('Version 0.1'),
+        const SizedBox(height: 25),
+        Center(
+          child: TextButton(
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 30),
+              height: 60,
+              width: MediaQuery.of(context).size.width - (2.5 * 250),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: kPrimaryColor,
+                borderRadius: BorderRadius.circular(99),
+                boxShadow: [
+                  BoxShadow(
+                    color: kPrimaryColor.withOpacity(0.20),
+                    blurRadius: 22.0,
+                    offset: const Offset(
+                      0,
+                      10,
+                    ),
+                  ),
+                ],
+              ),
+              child: const Text(
+                'Create Session',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ],
-          ),
-          child: const Text(
-            'Create Session',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
             ),
+            onPressed: _signIn,
           ),
         ),
-        onPressed: _signIn,
-      ),
+      ],
     );
   }
 }

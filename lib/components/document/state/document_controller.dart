@@ -103,7 +103,12 @@ class DocumentController extends StateNotifier<DocumentState> {
       (event) {
         final dId = event.payload['deviceId'];
         if (_deviceId != dId) {
-          final delta = Delta.fromJson(jsonDecode(event.payload['delta']));
+          late final delta;
+          try {
+            delta = Delta.fromJson(jsonDecode(event.payload['delta']));
+          } catch (e) {
+            debugPrint('Error ---> ' + e.toString());
+          }
           state.quillController?.compose(
             delta,
             // deals with the cursor change position of each user when more than one
