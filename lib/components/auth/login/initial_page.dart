@@ -10,15 +10,15 @@ class InitialPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return const Scaffold( 
       body: Center(
-        child: _InitialPage(),
+        child: _InitialPage(), //returning the info taken from the login form
       ),
     );
   }
 }
 
-
+//generating the key that will be used to create the session for the user. 
 class _InitialPage extends ConsumerStatefulWidget {
   const _InitialPage({Key? key}) : super(key: key);
 
@@ -30,6 +30,7 @@ class _InitialPage extends ConsumerStatefulWidget {
 class _InitialPageState extends ConsumerState<_InitialPage> {
   Future<void> _signIn() async {
     await ref.read(LoginController.notifier).createSession(
+      //the dummy email and password will be used to create a new authenticated session. 
           email: 'onlyuser@app.com',
           password: '12345678',
         );
