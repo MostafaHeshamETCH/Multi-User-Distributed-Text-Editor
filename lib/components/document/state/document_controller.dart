@@ -142,7 +142,7 @@ class DocumentController extends StateNotifier<DocumentState> {
 
   // debounce time is set to 2 seconds so not each element updated is saved with a separate update request to database,
   //yet multiple changes are cached locally then saved remotely each 2 seconds
-  void _debounceSave({Duration duration = const Duration(seconds: 2)}) {
+  void _debounceSave({Duration duration = const Duration(seconds: 1)}) {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(duration, () {
       saveDocumentImmediately();
@@ -156,7 +156,7 @@ class DocumentController extends StateNotifier<DocumentState> {
       ),
       isSavedRemotely: false,
     );
-    _debounceSave(duration: const Duration(milliseconds: 500));
+    _debounceSave(duration: const Duration(milliseconds: 100));
   }
 
   Future<void> saveDocumentImmediately() async {
