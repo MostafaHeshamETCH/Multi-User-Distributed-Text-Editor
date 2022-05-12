@@ -10,12 +10,13 @@ import 'state_base.dart';
 final _authServiceProvider = StateNotifierProvider<AuthService, AuthState>(
     (ref) => AuthService(ref.read));
 
-// to update the state of the notifier (Auth) at any time from one place
+// create class to update the state of the notifier (Auth) at any time from one place
+// Authentication Service, takes info from authentication provider
 class AuthService extends StateNotifier<AuthState> {
-  AuthService(this._read)
+  AuthService(this._read) // initialize the constructor and pass the auth state
       //isLoading set to true as this is only called when initiating an authentication
       : super(const AuthState.unauthenticated(isLoading: true)) {
-    refresh();
+    refresh(); // call the refresh method which does the initial authentication checks
   }
 
   static StateNotifierProvider<AuthService, AuthState> get provider =>

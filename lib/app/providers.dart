@@ -5,7 +5,7 @@ import '../repositories/repositories.dart';
 import 'constants.dart';
 import 'state/state.dart';
 
-// just organize providers for easy access
+// Organize providers for easy access
 abstract class Dependency {
   static Provider<Client> get client => _clientProvider;
   static Provider<Database> get database => _databaseProvider;
@@ -14,7 +14,7 @@ abstract class Dependency {
 }
 
 // AuthRepo Provider
-// auth object can be used to get user id or all other info
+// auth object can be used to get user id and all other info
 abstract class Repository {
   static Provider<AuthRepository> get auth =>
       AuthRepository.provider; // expose auth provider
@@ -28,7 +28,7 @@ abstract class AppState {
       AuthService.provider;
 }
 
-// clients that comes from appWrite
+// create a client provider, that comes from appWrite
 final _clientProvider = Provider<Client>(
   (ref) => Client()
     ..setProject(appwriteProjectId)
@@ -45,6 +45,6 @@ final _accountProvider = Provider<Account>(
   (ref) => Account(ref.read(_clientProvider)),
 );
 
-// for reacting to real-time events
+// for reacting to real-time changes that happen in the database
 final _realtimeProvider =
     Provider<Realtime>((ref) => Realtime(ref.read(_clientProvider)));
