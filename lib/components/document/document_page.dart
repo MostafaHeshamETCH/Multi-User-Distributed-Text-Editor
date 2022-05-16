@@ -13,6 +13,8 @@ final _quillControllerProvider =
   return test.quillController;
 });
 
+//This class passes the document ID to a constant variable
+//Each document has its own unique id. 
 class DocumentPage extends ConsumerWidget {
   const DocumentPage({
     Key? key,
@@ -21,6 +23,7 @@ class DocumentPage extends ConsumerWidget {
 
   final String documentId;
 
+// This is the design of the text editor itself
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
@@ -46,7 +49,6 @@ class DocumentPage extends ConsumerWidget {
               margin: const EdgeInsets.symmetric(horizontal: 30),
               height: 50,
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-              // width: MediaQuery.of(context).size.width - (2.5 * 30),
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: kPrimaryColor,
@@ -72,6 +74,7 @@ class DocumentPage extends ConsumerWidget {
   }
 }
 
+// consumer state for widgets to which we pass a document id
 class _DocumentEditorWidget extends ConsumerStatefulWidget {
   const _DocumentEditorWidget({
     Key? key,
@@ -86,16 +89,16 @@ class _DocumentEditorWidget extends ConsumerStatefulWidget {
 }
 
 class __DocumentEditorState extends ConsumerState<_DocumentEditorWidget> {
-  final FocusNode _focusNode = FocusNode();
+  final FocusNode _focusNode = FocusNode(); // allows everything to be wrapped in a gesture detector, returned in line 104
   final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
     final quillController =
-        ref.watch(_quillControllerProvider(widget.documentId));
-
+        ref.watch(_quillControllerProvider(widget.documentId)); // ref.watch gets the document.id to be stored in quillCotroller
+    // check if null, meaning no id
     if (quillController == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator()); // call/implement CircularProgressIndicator symbol for loading
     }
 
     return GestureDetector(
@@ -103,6 +106,7 @@ class __DocumentEditorState extends ConsumerState<_DocumentEditorWidget> {
       child: RawKeyboardListener(
         focusNode: FocusNode(),
         onKey: (event) {
+          // check if b is pressed, then make content bold
           if (event.data.isControlPressed && event.character == 'b' ||
               event.data.isMetaPressed && event.character == 'b') {
             if (quillController
@@ -123,12 +127,11 @@ class __DocumentEditorState extends ConsumerState<_DocumentEditorWidget> {
           ),
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
           child: Card(
-            // color: const Color(),
             elevation: 7,
             child: Padding(
               padding: const EdgeInsets.all(86.0),
-              child: quill.QuillEditor(
-                controller: quillController,
+              child: quill.QuillEditor( // allows us to do rich text editting 
+                controller: quillController, //this calls the quillcontroller provider implemented above. 
                 scrollController: _scrollController,
                 scrollable: true,
                 focusNode: _focusNode,
@@ -153,8 +156,10 @@ class _Toolbar extends ConsumerWidget {
 
   final String documentId;
 
+//Displays the document ID on the document's page. 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // allows urls with different ids to contain corresponding text at the same time, cached at the client side
     final quillController = ref.watch(_quillControllerProvider(documentId));
 
     // for loading or errors

@@ -32,10 +32,13 @@ final routesLoggedOut = RouteMap(
 */
 final routesLoggedIn = RouteMap(
   onUnknownRoute: (_) => const Redirect(_newDocument),
+  
   routes: {
     _newDocument: (_) => const TransitionPage(child: NewDocumentPage()),
     '$_document/:id': (info) {
+      // variable that checks if the id given exists
       final docId = info.pathParameters['id'];
+      // if not create a new id by redirecting to a new document
       if (docId == null) {
         return const Redirect(_newDocument);
       }

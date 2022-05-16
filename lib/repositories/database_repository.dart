@@ -23,6 +23,7 @@ class DatabaseRepository with RepositoryExceptionMixin {
 
   Database get _database => _read(Dependency.database);
 
+// calls _createPageAndDelta wrapped in an exception handler, given the owner and the id
   Future<void> createNewPage({
     required String documentId,
     required String owner,
@@ -31,6 +32,7 @@ class DatabaseRepository with RepositoryExceptionMixin {
         _createPageAndDelta(owner: owner, documentId: documentId));
   }
 
+  // creates 2 documents: 1 for pages and another for delta
   Future<void> _createPageAndDelta({
     required String documentId,
     required String owner,

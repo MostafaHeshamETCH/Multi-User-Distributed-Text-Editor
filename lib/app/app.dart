@@ -7,9 +7,13 @@ import 'package:routemaster/routemaster.dart';
 import 'navigation/routes.dart';
 import 'providers.dart';
 
+// two providers to differentiate logged in and logged out functions' routes in routes.dart file
+
+// isAuthenticated returns true if the user is not null, used to check if the user is authenticated or not
 final _isAuthenticatedProvider =
     Provider<bool>((ref) => ref.watch(AppState.auth).isAuthenticated);
 
+// isLoading returns true when a request is being processes (actually loading), detects if the authentication is loading
 final _isAuthLoading =
     Provider<bool>((ref) => ref.watch(AppState.auth).isLoading);
 

@@ -8,12 +8,13 @@ import '../../controller_state_base.dart';
 */
 class DocumentState extends ControllerStateBase {
   const DocumentState({
+    // gets the quill document and controller 
     required this.id,
     this.documentPageData,
-    this.quillDocument,
-    this.quillController,
+    this.quillDocument, // 
+    this.quillController, // text editor controller
     this.isSavedRemotely =
-        false, // saved to database server (and locally) or not yet (if not yet it's saved locally only)
+        false, // saved to database server (and locally - cached) OR not yet (saved locally only)
     AppError? error,
   }) : super(error: error);
 
@@ -23,9 +24,12 @@ class DocumentState extends ControllerStateBase {
   final QuillController? quillController;
   final bool isSavedRemotely;
 
+// pass the id and the error message, because we don't want the document 
+// to be reactive when the quill document or controller changes
   @override
   List<Object?> get props => [id, error];
 
+// used to update the state easily
   @override
   DocumentState copyWith({
     String? id,

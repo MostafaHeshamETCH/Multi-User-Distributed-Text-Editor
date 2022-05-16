@@ -5,7 +5,7 @@ const appwriteProjectId = '627980b0394c14f6497d';
 
 const kPrimaryColor = Color(0xFF041C32);
 
-// Database collection names and paths
+// Database collection names and paths to be used in reposotory of database
 abstract class CollectionNames {
   static String get delta => 'delta';
   static String get deltaDocumentsPath => 'collections.$delta.documents';

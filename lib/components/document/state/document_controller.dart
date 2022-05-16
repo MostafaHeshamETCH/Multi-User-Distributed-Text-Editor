@@ -12,14 +12,16 @@ import '../../../models/models.dart';
 import '../../../repositories/repositories.dart';
 import 'document_state.dart';
 
+// to identify the provider
 final _documentProvider =
-    StateNotifierProvider.family<DocumentController, DocumentState, String>(
+    StateNotifierProvider.family<DocumentController, DocumentState, String>( // family creates a map of providers
   (ref, documentId) => DocumentController(
     ref.read,
     documentId: documentId,
   ),
 );
 
+// create a new document controller, given the id
 class DocumentController extends StateNotifier<DocumentState> {
   final _deviceId = const Uuid().v4();
 
@@ -54,16 +56,17 @@ class DocumentController extends StateNotifier<DocumentState> {
 
       late final Document quillDoc;
       if (docPageData.content.isEmpty) {
-        quillDoc = Document()..insert(0, '');
+        quillDoc = Document()..insert(0, ''); // quill document created at index 0
       } else {
         quillDoc = Document.fromDelta(docPageData.content);
       }
 
+      // quill controller created for the new document and we set the current position in the document using a pointing cursor.
       final controller = QuillController(
         document: quillDoc,
         selection: const TextSelection.collapsed(offset: 0),
       );
-
+      // used to update the state currently in
       state = state.copyWith(
         documentPageData: docPageData,
         quillDocument: quillDoc,
