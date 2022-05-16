@@ -7,6 +7,7 @@ import '../../app/navigation/routes.dart';
 import '../../app/providers.dart';
 import '../../repositories/repositories.dart';
 
+//Used ConsumerStateful Widget from riverpod to create the interface of the text documents. 
 class NewDocumentPage extends ConsumerStatefulWidget {
   const NewDocumentPage({Key? key}) : super(key: key);
 
@@ -15,10 +16,11 @@ class NewDocumentPage extends ConsumerStatefulWidget {
       _NewDocumentPageState();
 }
 
+//A Class that contains the state of the new created document. 
 class _NewDocumentPageState extends ConsumerState<NewDocumentPage> {
-  final _uuid = const Uuid();
+  final _uuid = const Uuid(); //a variable that will store the id of the created document.
 
-  bool showError = false;
+  bool showError = false; //a boolean flag that changes states according to errors. It's initially set to false (No Error)
 
   @override
   void initState() {
@@ -27,7 +29,7 @@ class _NewDocumentPageState extends ConsumerState<NewDocumentPage> {
   }
 
   Future<void> _createNewPage() async {
-    final documentId = _uuid.v4();
+    final documentId = _uuid.v4(); //_uuid.v4 is like a random id generator
     try {
       await ref.read(Repository.database).createNewPage(
             documentId: documentId,
