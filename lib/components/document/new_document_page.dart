@@ -18,6 +18,7 @@ class NewDocumentPage extends ConsumerStatefulWidget {
 
 //A Class that contains the state of the new created document. 
 class _NewDocumentPageState extends ConsumerState<NewDocumentPage> {
+  // import Uuid that generates a unique identifier to be used per new document
   final _uuid = const Uuid(); //a variable that will store the id of the created document.
 
   bool showError = false; //a boolean flag that changes states according to errors. It's initially set to false (No Error)
@@ -31,9 +32,10 @@ class _NewDocumentPageState extends ConsumerState<NewDocumentPage> {
   Future<void> _createNewPage() async {
     final documentId = _uuid.v4(); //_uuid.v4 is like a random id generator
     try {
+      // call the method and pass the id and the owner to the repository
       await ref.read(Repository.database).createNewPage(
             documentId: documentId,
-            owner: ref.read(AppState.auth).user!.$id,
+            owner: ref.read(AppState.auth).user!.$id, // owner is the current authenticated user 
             // owner: '627982448ae239ffbd28',
           );
 

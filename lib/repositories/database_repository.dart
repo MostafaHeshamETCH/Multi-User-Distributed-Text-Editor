@@ -59,20 +59,26 @@ class DatabaseRepository with RepositoryExceptionMixin {
     ]);
   }
 
+  // 
   Future<DocumentPageData> getPage({
     required String documentId,
   }) {
     return exceptionHandler(_getPage(documentId));
   }
 
+  // Private method to get the document by id from the database
   Future<DocumentPageData> _getPage(String documentId) async {
+    // get the document from database
     final doc = await _database.getDocument(
       collectionId: CollectionNames.pages,
       documentId: documentId,
     );
-    return DocumentPageData.fromMap(doc.data);
+    // return document by passing the data to fromMap()
+    return DocumentPageData.fromMap(doc.data); // map string dynamic, takes the title from map and puts it as title, 
+    // then gets the json and extracts the delta from json (content is delta)
   }
 
+  // update the page by passing the document id and new document page data, to which the method toMap() is called
   Future<void> updatePage(
       {required String documentId,
       required DocumentPageData documentPage}) async {
