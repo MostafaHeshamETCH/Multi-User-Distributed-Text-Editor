@@ -91,12 +91,13 @@ class DatabaseRepository with RepositoryExceptionMixin {
     );
   }
 
-  Future<void> updateDelta({
+  // made to allow real-time changes
+  Future<void> updateDelta({ // pass as arguments the id and the changes made to the file (deltaData)
     required String pageId,
     required DeltaData deltaData,
   }) {
     return exceptionHandler(
-      _database.updateDocument(
+      _database.updateDocument( // pass the collection and document id and the changes made (delta) to update document
         collectionId: CollectionNames.delta,
         documentId: pageId,
         data: deltaData.toMap(),
@@ -104,16 +105,14 @@ class DatabaseRepository with RepositoryExceptionMixin {
     );
   }
 
-  /*
-    subscribe to the database collection containing the document data
-    in AppWrite database server running on Docker
-
-    return a stream of realtime subscription events
-  */
+  
+  // subscribe to the database collection containing the document data
+  // in AppWrite database server running on Docker
+  // return a stream of realtime subscription events
   RealtimeSubscription subscribeToPage({required String pageId}) {
     try {
-      return _realtime
-          .subscribe(['${CollectionNames.deltaDocumentsPath}.$pageId']);
+      return _realtime // getter uses riverpod read to get real-time dependencies
+          .subscribe(['${CollectionNames.deltaDocumentsPath}.$pageId']); // path to what user desires to subscribe to
     } on AppwriteException catch (e) {
       logger.warning(e.message, e);
       throw RepositoryException(

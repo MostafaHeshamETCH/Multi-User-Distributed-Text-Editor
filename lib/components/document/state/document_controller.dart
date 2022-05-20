@@ -23,7 +23,7 @@ final _documentProvider =
 
 // create a new document controller, given the id
 class DocumentController extends StateNotifier<DocumentState> {
-  final _deviceId = const Uuid().v4();
+  final _deviceId = const Uuid().v4(); // to be used in real-time changes, to store per change identidying the device 
 
   // used to make a small delay between saves, so we don't save too often remotely and jam the database
   Timer? _debounce;
@@ -33,11 +33,11 @@ class DocumentController extends StateNotifier<DocumentState> {
           DocumentState(id: documentId),
         ) {
     _setupDocument();
-    _setupListeners();
+    _setupListeners(); // listen to real-time changes and make them onto db
   }
 
-  late final StreamSubscription<dynamic>? documentListener;
-  late final StreamSubscription<dynamic>? realtimeListener;
+  late final StreamSubscription<dynamic>? documentListener; // document listener (local changes)
+  late final StreamSubscription<dynamic>? realtimeListener; // real-time listener (remote changes)
 
   static StateNotifierProviderFamily<DocumentController, DocumentState, String>
       get provider => _documentProvider;
@@ -90,9 +90,9 @@ class DocumentController extends StateNotifier<DocumentState> {
           // do not broadcast remote changes only local ones
           // user only broadcast their local cached changes and listens
           // for remote changes but do not broadcast them
-          return;
+          return; // return when the source is not local, so it's not broadcasted
         }
-        // send RT changes to all users to be updated
+        // send real-time (local) changes to all users to be updated
         _broadcastDeltaUpdate(delta);
       });
     } on RepositoryException catch (e) {
@@ -100,22 +100,24 @@ class DocumentController extends StateNotifier<DocumentState> {
     }
   }
 
+  // set up listeners 
   Future<void> _setupListeners() async {
-    final subscription =
+    final subscription =  // subscribe to page that listens to real time changes to the remote server
         _read(Repository.database).subscribeToPage(pageId: state.id);
     // listen to a stream of realtime events that occurs in the document to
     // reflect all these changes at realtime to all users
-    realtimeListener = subscription.stream.listen(
-      (event) {
-        final dId = event.payload['deviceId'];
+    realtimeListener = subscription.stream.listen( // gives a stream subscription to listen to
+      (event) { // every time the document changes
+        final dId = event.payload['deviceId']; // get the device id from the payload
         if (_deviceId != dId) {
-          late final delta;
+          late final delta; 
           try {
-            delta = Delta.fromJson(jsonDecode(event.payload['delta']));
+            delta = Delta.fromJson(jsonDecode(event.payload['delta'])); // create delta from json for changes made in the document
+            // and decode the event payload of delta 
           } catch (e) {
             debugPrint('Error ---> ' + e.toString());
           }
-          state.quillController?.compose(
+          state.quillController?.compose( // compose to create an update to the core controller
             delta,
             // deals with the cursor change position of each user when more than one
             // users are doing changes in the same line
@@ -131,12 +133,12 @@ class DocumentController extends StateNotifier<DocumentState> {
 
   Future<void> _broadcastDeltaUpdate(Delta delta) async {
     // update AppWrite database with the new broadcasted data
-    _read(Repository.database).updateDelta(
-      pageId: state.id,
-      deltaData: DeltaData(
-        user: _read(AppState.auth).user!.$id,
-        delta: jsonEncode(delta.toJson()),
-        deviceId: _deviceId,
+    _read(Repository.database).updateDelta( // calls update delta on the repository
+      pageId: state.id, // pass in page id
+      deltaData: DeltaData( // pass in delta data
+        user: _read(AppState.auth).user!.$id, // delta data object created based on the current user
+        delta: jsonEncode(delta.toJson()), // & based on the delta changes that happened (passed to the function as a whole)
+        deviceId: _deviceId, // & device id 
       ),
     );
   }
@@ -203,7 +205,8 @@ class DocumentController extends StateNotifier<DocumentState> {
 
   @override
   void dispose() {
-k8    documentListener?.cancel();
+    // dispose of the listeners
+k8  documentListener?.cancel();
     realtimeListener?.cancel();
     state.quillController?.removeListener(_quillControllerUpdate);
     super.dispose();

@@ -1,9 +1,11 @@
+// real-time changes
+
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 
 // broadcasted data model to allow realtime changes to be seen by all users
-class DeltaData extends Equatable {
+class DeltaData extends Equatable { // represents the individual storage of changes in the document
   final String user;
 
   /// String json Representation of delta
