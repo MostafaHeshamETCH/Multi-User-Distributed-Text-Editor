@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:convert';
+kimport 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -48,16 +48,19 @@ class DocumentController extends StateNotifier<DocumentState> {
 
   final Reader _read;
 
+  // to get document
   Future<void> _setupDocument() async {
+    // get document by id to be found and displayed b y quill editor onto the user interface
     try {
       final docPageData = await _read(Repository.database).getPage(
         documentId: state.id,
       );
-
       late final Document quillDoc;
+      // check on content, whether empty or not
       if (docPageData.content.isEmpty) {
         quillDoc = Document()..insert(0, ''); // quill document created at index 0
       } else {
+        // set quill document to delta content
         quillDoc = Document.fromDelta(docPageData.content);
       }
 
@@ -137,39 +140,48 @@ class DocumentController extends StateNotifier<DocumentState> {
       ),
     );
   }
-
+  
+  // update quill controller, used with a listener 
   void _quillControllerUpdate() {
-    state = state.copyWith(isSavedRemotely: false);
-    _debounceSave();
+    // at each update, variable updated to indicate that new content was added that is not saved to database
+    state = state.copyWith(isSavedRemotely: false); // db is not up to date
+    _debounceSave(); // uses debounce timer
   }
 
-  // debounce time is set to 2 seconds so not each element updated is saved with a separate update request to database,
-  //yet multiple changes are cached locally then saved remotely each 2 seconds
+  // debounce time is set to 1 second so not each element updated is saved with a separate update request to database,
+  // yet multiple changes are cached locally then saved remotely each 1 second
   void _debounceSave({Duration duration = const Duration(seconds: 1)}) {
-    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    // wait until user stops typing, pause 1 second, then save
+    if (_debounce?.isActive ?? false) _debounce?.cancel(); // check if debounce is active, then cancel debounce, to allow the interval pause
     _debounce = Timer(duration, () {
       saveDocumentImmediately();
     });
   }
 
+  // for the document title
   void setTitle(String title) {
     state = state.copyWith(
       documentPageData: state.documentPageData?.copyWith(
         title: title,
       ),
       isSavedRemotely: false,
-    );
+    ); // save title every 100 ms
     _debounceSave(duration: const Duration(milliseconds: 100));
   }
 
+  // to save the document as soon as it's called
   Future<void> saveDocumentImmediately() async {
+    // log the saving of the doc
     logger.info('Saving document: ${state.id}');
+    // checks if state is null or document is null 
     if (state.documentPageData == null || state.quillDocument == null) {
+      // log error message
       logger.severe('Cannot save document, doc state is empty');
       state = state.copyWith(
         error: AppError(message: 'Cannot save document, state is empty'),
       );
     }
+    // set state = to new document state ( includes the changes/delta )
     state = state.copyWith(
       documentPageData: state.documentPageData!
           .copyWith(content: state.quillDocument!.toDelta()),
@@ -179,20 +191,19 @@ class DocumentController extends StateNotifier<DocumentState> {
         documentId: state.id,
         documentPage: state.documentPageData!,
       );
-      state = state.copyWith(
-          isSavedRemotely:
-              true); // true as it is saved immediately to database server
+      state = state.copyWith(isSavedRemotely: true); // true as it is saved immediately to database server
     } on RepositoryException catch (e) {
+      // error - could not save to database (only saved locally)
       state = state.copyWith(
-        error: AppError(message: e.message),
-        isSavedRemotely: false,
+        error: AppError(message: e.message), // set error equal to the message
+        isSavedRemotely: false, // update variable wtohen not saved remotely
       );
     }
   }
 
   @override
   void dispose() {
-    documentListener?.cancel();
+k8    documentListener?.cancel();
     realtimeListener?.cancel();
     state.quillController?.removeListener(_quillControllerUpdate);
     super.dispose();

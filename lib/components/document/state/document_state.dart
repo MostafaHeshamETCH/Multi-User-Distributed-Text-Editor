@@ -9,11 +9,11 @@ import '../../controller_state_base.dart';
 class DocumentState extends ControllerStateBase {
   const DocumentState({
     // gets the quill document and controller 
-    required this.id,
-    this.documentPageData,
-    this.quillDocument, // 
+    required this.id, // unique id
+    this.documentPageData, // content
+    this.quillDocument, // the document
     this.quillController, // text editor controller
-    this.isSavedRemotely =
+    this.isSavedRemotely = // boolean value to indicate whether it's saved remotely or not
         false, // saved to database server (and locally - cached) OR not yet (saved locally only)
     AppError? error,
   }) : super(error: error);
@@ -41,7 +41,8 @@ class DocumentState extends ControllerStateBase {
   }) {
     return DocumentState(
       id: id ?? this.id,
-      documentPageData: documentPageData ?? this.documentPageData,
+      documentPageData: documentPageData ?? this.documentPageData, // check if content is not null, 
+      // then we set it equal to the current value, else we set it to the new value ( adding the changes )
       quillDocument: quillDocument ?? this.quillDocument,
       quillController: quillController ?? this.quillController,
       isSavedRemotely: isSavedRemotely ?? this.isSavedRemotely,
