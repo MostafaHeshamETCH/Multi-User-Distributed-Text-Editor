@@ -28,22 +28,30 @@ class AuthService extends StateNotifier<AuthState> {
     try {
       final user = await _read(Repository.auth).get();
       setUser(user);
-    } on RepositoryException catch (_) { //this exception is raised if the entered user is unauthorized 
+    } on RepositoryException catch (_) {
+      //this exception is raised if the entered user is unauthorized
       logger.info('Not authenticated');
       state = const AuthState.unauthenticated();
     }
   }
 
   void setUser(User user) {
-    logger.info('Authentication successful, setting $user'); //saves the info of the entered user when the authentication is true. 
-    state = state.copyWith(user: user, isLoading: false); //takes the data provided in the user variable from the login_controller.dart file. 
+    logger.info(
+        'Authentication successful, setting $user'); //saves the info of the entered user when the authentication is true.
+    state = state.copyWith(
+        user: user,
+        isLoading:
+            false); //takes the data provided in the user variable from the login_controller.dart file.
   }
 
   Future<void> signOut() async {
     try {
-      await _read(Repository.auth).deleteSession(sessionId: 'current'); //gets the ID of the current session and deletes it after the user signs out. 
+      await _read(Repository.auth).deleteSession(
+          sessionId:
+              'current'); //gets the ID of the current session and deletes it after the user signs out.
       logger.info('Sign out successful');
-      state = const AuthState.unauthenticated(); //after the session is deleted, the user gets unauthenticated
+      state = const AuthState
+          .unauthenticated(); //after the session is deleted, the user gets unauthenticated
     } on RepositoryException catch (e) {
       state = state.copyWith(error: AppError(message: e.message));
     }
@@ -53,30 +61,42 @@ class AuthService extends StateNotifier<AuthState> {
 class AuthState extends StateBase {
   final User? user;
   final bool isLoading; // to visualize auth loading in UI
+  final bool isOffline; // to visualize auth loading in UI
 
-  const AuthState({ 
+  const AuthState({
     this.user, // takes for argument, the user
-    this.isLoading = false, // takes as well isLoading value, initially set to false
-    AppError? error, // and can take an app error, if specified 
+    this.isLoading =
+        false, // takes as well isLoading value, initially set to false
+    this.isOffline = false, // start assuming client is online
+    AppError? error, // and can take an app error, if specified
   }) : super(error: error);
 
-  const AuthState.unauthenticated({this.isLoading = false}) // name constructor
+  const AuthState.unauthenticated(
+      {this.isLoading = false, this.isOffline = false}) // name constructor
       : user = null,
         super(error: null);
 
   @override
-  List<Object?> get props => [user, isLoading, error]; // props from equatable, to compare user, isLoading and error
+  List<Object?> get props => [
+        user,
+        isLoading,
+        error
+      ]; // props from equatable, to compare user, isLoading and error
 
-  bool get isAuthenticated => user != null; // to specify if we are authenticated or not
+  bool get isAuthenticated =>
+      user != null; // to specify if we are authenticated or not
 
-  AuthState copyWith({ // function to create new objects from existing ones 
+  AuthState copyWith({
+    // function to create new objects from existing ones
     User? user,
     bool? isLoading,
+    bool? isOffline,
     AppError? error,
   }) =>
       AuthState(
         user: user ?? this.user,
         isLoading: isLoading ?? this.isLoading,
+        isOffline: isOffline ?? this.isOffline,
         error: error ?? this.error,
       );
 }

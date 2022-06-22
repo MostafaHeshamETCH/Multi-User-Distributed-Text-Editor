@@ -1,8 +1,8 @@
 import 'dart:async';
-kimport 'dart:convert';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_quill/flutter_quill.dart';
+import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
@@ -14,7 +14,8 @@ import 'document_state.dart';
 
 // to identify the provider
 final _documentProvider =
-    StateNotifierProvider.family<DocumentController, DocumentState, String>( // family creates a map of providers
+    StateNotifierProvider.family<DocumentController, DocumentState, String>(
+  // family creates a map of providers
   (ref, documentId) => DocumentController(
     ref.read,
     documentId: documentId,
@@ -23,21 +24,26 @@ final _documentProvider =
 
 // create a new document controller, given the id
 class DocumentController extends StateNotifier<DocumentState> {
-  final _deviceId = const Uuid().v4(); // to be used in real-time changes, to store per change identidying the device 
+  final _deviceId = const Uuid()
+      .v4(); // to be used in real-time changes, to store per change identifying the device
 
   // used to make a small delay between saves, so we don't save too often remotely and jam the database
   Timer? _debounce;
+
+  bool isOffline = false;
 
   DocumentController(this._read, {required String documentId})
       : super(
           DocumentState(id: documentId),
         ) {
     _setupDocument();
-    _setupListeners(); // listen to real-time changes and make them onto db
+    _setupListeners(); // listen to real-time changes and write them into db
   }
 
-  late final StreamSubscription<dynamic>? documentListener; // document listener (local changes)
-  late final StreamSubscription<dynamic>? realtimeListener; // real-time listener (remote changes)
+  late final StreamSubscription<dynamic>?
+      documentListener; // document listener (local changes)
+  late final StreamSubscription<dynamic>?
+      realtimeListener; // real-time listener (remote changes)
 
   static StateNotifierProviderFamily<DocumentController, DocumentState, String>
       get provider => _documentProvider;
@@ -48,24 +54,25 @@ class DocumentController extends StateNotifier<DocumentState> {
 
   final Reader _read;
 
-  // to get document
+  // to set up document
   Future<void> _setupDocument() async {
     // get document by id to be found and displayed b y quill editor onto the user interface
     try {
       final docPageData = await _read(Repository.database).getPage(
         documentId: state.id,
       );
-      late final Document quillDoc;
+      late final quill.Document quillDoc;
       // check on content, whether empty or not
       if (docPageData.content.isEmpty) {
-        quillDoc = Document()..insert(0, ''); // quill document created at index 0
+        quillDoc = quill.Document()
+          ..insert(0, ''); // quill document created at index 0
       } else {
         // set quill document to delta content
-        quillDoc = Document.fromDelta(docPageData.content);
+        quillDoc = quill.Document.fromDelta(docPageData.content);
       }
 
       // quill controller created for the new document and we set the current position in the document using a pointing cursor.
-      final controller = QuillController(
+      final controller = quill.QuillController(
         document: quillDoc,
         selection: const TextSelection.collapsed(offset: 0),
       );
@@ -86,7 +93,7 @@ class DocumentController extends StateNotifier<DocumentState> {
         final delta = event.item2;
         final source = event.item3;
 
-        if (source != ChangeSource.LOCAL) {
+        if (source != quill.ChangeSource.LOCAL) {
           // do not broadcast remote changes only local ones
           // user only broadcast their local cached changes and listens
           // for remote changes but do not broadcast them
@@ -100,30 +107,35 @@ class DocumentController extends StateNotifier<DocumentState> {
     }
   }
 
-  // set up listeners 
+  // set up listeners
   Future<void> _setupListeners() async {
-    final subscription =  // subscribe to page that listens to real time changes to the remote server
+    final subscription = // subscribe to page that listens to real time changes to the remote server
         _read(Repository.database).subscribeToPage(pageId: state.id);
     // listen to a stream of realtime events that occurs in the document to
     // reflect all these changes at realtime to all users
-    realtimeListener = subscription.stream.listen( // gives a stream subscription to listen to
-      (event) { // every time the document changes
-        final dId = event.payload['deviceId']; // get the device id from the payload
+    realtimeListener = subscription.stream.listen(
+      // gives a stream subscription to listen to
+      (event) {
+        // every time the document changes
+        final dId =
+            event.payload['deviceId']; // get the device id from the payload
         if (_deviceId != dId) {
-          late final delta; 
+          late final quill.Delta delta;
           try {
-            delta = Delta.fromJson(jsonDecode(event.payload['delta'])); // create delta from json for changes made in the document
-            // and decode the event payload of delta 
+            delta = quill.Delta.fromJson(jsonDecode(event.payload[
+                'delta'])); // create delta from json for changes made in the document
+            // and decode the event payload of delta
           } catch (e) {
             debugPrint('Error ---> ' + e.toString());
           }
-          state.quillController?.compose( // compose to create an update to the core controller
+          state.quillController?.compose(
+            // compose to create an update to the core controller
             delta,
             // deals with the cursor change position of each user when more than one
             // users are doing changes in the same line
             state.quillController?.selection ??
                 const TextSelection.collapsed(offset: 0),
-            ChangeSource
+            quill.ChangeSource
                 .REMOTE, // specify that the changes are all remote (from AppWrite database server not locally cached)
           );
         }
@@ -131,19 +143,24 @@ class DocumentController extends StateNotifier<DocumentState> {
     );
   }
 
-  Future<void> _broadcastDeltaUpdate(Delta delta) async {
+  Future<void> _broadcastDeltaUpdate(quill.Delta delta) async {
     // update AppWrite database with the new broadcasted data
-    _read(Repository.database).updateDelta( // calls update delta on the repository
+    _read(Repository.database).updateDelta(
+      // calls update delta on the repository
       pageId: state.id, // pass in page id
-      deltaData: DeltaData( // pass in delta data
-        user: _read(AppState.auth).user!.$id, // delta data object created based on the current user
-        delta: jsonEncode(delta.toJson()), // & based on the delta changes that happened (passed to the function as a whole)
-        deviceId: _deviceId, // & device id 
+      deltaData: DeltaData(
+        // pass in delta data
+        user: _read(AppState.auth)
+            .user!
+            .$id, // delta data object created based on the current user
+        delta: jsonEncode(delta
+            .toJson()), // & based on the delta changes that happened (passed to the function as a whole)
+        deviceId: _deviceId, // & device id
       ),
     );
   }
-  
-  // update quill controller, used with a listener 
+
+  // update quill controller, used with a listener
   void _quillControllerUpdate() {
     // at each update, variable updated to indicate that new content was added that is not saved to database
     state = state.copyWith(isSavedRemotely: false); // db is not up to date
@@ -154,7 +171,8 @@ class DocumentController extends StateNotifier<DocumentState> {
   // yet multiple changes are cached locally then saved remotely each 1 second
   void _debounceSave({Duration duration = const Duration(seconds: 1)}) {
     // wait until user stops typing, pause 1 second, then save
-    if (_debounce?.isActive ?? false) _debounce?.cancel(); // check if debounce is active, then cancel debounce, to allow the interval pause
+    // check if debounce is active, then cancel debounce, to allow the interval pause
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(duration, () {
       saveDocumentImmediately();
     });
@@ -168,14 +186,14 @@ class DocumentController extends StateNotifier<DocumentState> {
       ),
       isSavedRemotely: false,
     ); // save title every 100 ms
-    _debounceSave(duration: const Duration(milliseconds: 100));
+    _debounceSave(duration: const Duration(seconds: 1));
   }
 
   // to save the document as soon as it's called
   Future<void> saveDocumentImmediately() async {
     // log the saving of the doc
     logger.info('Saving document: ${state.id}');
-    // checks if state is null or document is null 
+    // checks if state is null or document is null
     if (state.documentPageData == null || state.quillDocument == null) {
       // log error message
       logger.severe('Cannot save document, doc state is empty');
@@ -193,20 +211,22 @@ class DocumentController extends StateNotifier<DocumentState> {
         documentId: state.id,
         documentPage: state.documentPageData!,
       );
-      state = state.copyWith(isSavedRemotely: true); // true as it is saved immediately to database server
+      state = state.copyWith(
+        isSavedRemotely: true,
+      ); // true as it is saved immediately to remote database server
     } on RepositoryException catch (e) {
       // error - could not save to database (only saved locally)
       state = state.copyWith(
         error: AppError(message: e.message), // set error equal to the message
-        isSavedRemotely: false, // update variable wtohen not saved remotely
+        isSavedRemotely: false, // saved locally
       );
     }
   }
 
   @override
   void dispose() {
-    // dispose of the listeners
-k8  documentListener?.cancel();
+    // dispose of the listeners preventing memory leaks
+    documentListener?.cancel();
     realtimeListener?.cancel();
     state.quillController?.removeListener(_quillControllerUpdate);
     super.dispose();

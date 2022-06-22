@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 
-
 class DocumentPageData extends Equatable {
-  final String title; // document data has a tilte of type string
-  final Delta content; // document data has content, saved in the form of delta (changes)
+  final String title; // document data has a title of type string
+  final Delta
+      content; // document data has content, saved in the form of delta (changes)
   /*
     Delta is the concept of individual changes implemented by Quill, the text-editor package we used.
     Each delta will be used extensively to broadcast realtime changes to multi-users.

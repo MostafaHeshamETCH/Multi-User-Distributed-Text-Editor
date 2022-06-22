@@ -16,6 +16,8 @@ class DatabaseRepository with RepositoryExceptionMixin {
 
   final Reader _read;
 
+  // bool isOffline = false;
+
   static Provider<DatabaseRepository> get provider =>
       _databaseRepositoryProvider;
 
@@ -59,7 +61,7 @@ class DatabaseRepository with RepositoryExceptionMixin {
     ]);
   }
 
-  // 
+  //
   Future<DocumentPageData> getPage({
     required String documentId,
   }) {
@@ -74,7 +76,8 @@ class DatabaseRepository with RepositoryExceptionMixin {
       documentId: documentId,
     );
     // return document by passing the data to fromMap()
-    return DocumentPageData.fromMap(doc.data); // map string dynamic, takes the title from map and puts it as title, 
+    return DocumentPageData.fromMap(doc
+        .data); // map string dynamic, takes the title from map and puts it as title,
     // then gets the json and extracts the delta from json (content is delta)
   }
 
@@ -92,12 +95,14 @@ class DatabaseRepository with RepositoryExceptionMixin {
   }
 
   // made to allow real-time changes
-  Future<void> updateDelta({ // pass as arguments the id and the changes made to the file (deltaData)
+  Future<void> updateDelta({
+    // pass as arguments the id and the changes made to the file (deltaData)
     required String pageId,
     required DeltaData deltaData,
   }) {
     return exceptionHandler(
-      _database.updateDocument( // pass the collection and document id and the changes made (delta) to update document
+      _database.updateDocument(
+        // pass the collection and document id and the changes made (delta) to update document
         collectionId: CollectionNames.delta,
         documentId: pageId,
         data: deltaData.toMap(),
@@ -105,14 +110,15 @@ class DatabaseRepository with RepositoryExceptionMixin {
     );
   }
 
-  
   // subscribe to the database collection containing the document data
   // in AppWrite database server running on Docker
   // return a stream of realtime subscription events
   RealtimeSubscription subscribeToPage({required String pageId}) {
     try {
       return _realtime // getter uses riverpod read to get real-time dependencies
-          .subscribe(['${CollectionNames.deltaDocumentsPath}.$pageId']); // path to what user desires to subscribe to
+          .subscribe([
+        '${CollectionNames.deltaDocumentsPath}.$pageId'
+      ]); // path to what user desires to subscribe to
     } on AppwriteException catch (e) {
       logger.warning(e.message, e);
       throw RepositoryException(
