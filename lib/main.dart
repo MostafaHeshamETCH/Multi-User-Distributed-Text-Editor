@@ -37,13 +37,13 @@ class _OfflineLoaderState extends State<OfflineLoader> {
     final ConnectivityResult result = await Connectivity().checkConnectivity();
 
     if (result == ConnectivityResult.wifi) {
-      debugPrint('Connected to a Wi-Fi network');
+      // debugPrint('Connected to a Wi-Fi network');
       // provider.isOffline = false;
     } else if (result == ConnectivityResult.mobile) {
-      debugPrint('Connected to a mobile network');
+      // debugPrint('Connected to a mobile network');
       // provider.isOffline = false;
     } else {
-      debugPrint('Not connected to any network');
+      // debugPrint('Not connected to any network');
       setState(() {
         isOffline = true;
       });
@@ -66,7 +66,8 @@ class _OfflineLoaderState extends State<OfflineLoader> {
               child: const Directionality(
                 textDirection: TextDirection.ltr,
                 child: Text(
-                    'You\'re Offline, Please Refresh once you\'r back online.'),
+                  'You\'re Offline, Please Refresh once you\'r back online.',
+                ),
               ),
             ),
           )

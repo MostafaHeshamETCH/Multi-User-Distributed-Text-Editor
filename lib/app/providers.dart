@@ -11,6 +11,11 @@ abstract class Dependency {
   static Provider<Database> get database => _databaseProvider;
   static Provider<Account> get account => _accountProvider;
   static Provider<Realtime> get realtime => _realtimeProvider;
+
+  static Provider<Client> get clientReplica => _clientProviderReplica;
+  static Provider<Database> get databaseReplica => _databaseProviderReplica;
+  static Provider<Account> get accountReplica => _accountProviderReplica;
+  static Provider<Realtime> get realtimeReplica => _realtimeProviderReplica;
 }
 
 // AuthRepo Provider
@@ -20,11 +25,18 @@ abstract class Repository {
       AuthRepository.provider; // expose auth provider
   static Provider<DatabaseRepository> get database =>
       DatabaseRepository.provider; // expose database provider
+
+  static Provider<AuthRepository> get authReplica =>
+      AuthRepository.provider; // expose auth provider
+  static Provider<DatabaseRepository> get databaseReplica =>
+      DatabaseRepository.provider; // expose database provider
 }
 
 // expose auth provider to listen on auth state
 abstract class AppState {
   static StateNotifierProvider<AuthService, AuthState> get auth =>
+      AuthService.provider;
+  static StateNotifierProvider<AuthService, AuthState> get authReplica =>
       AuthService.provider;
 }
 
@@ -36,15 +48,32 @@ final _clientProvider = Provider<Client>(
     ..setEndpoint(appwriteEndpoint),
 );
 
+final _clientProviderReplica = Provider<Client>(
+  (ref) => Client()
+    ..setProject(appwriteProjectIdReplica)
+    ..setSelfSigned(status: true)
+    ..setEndpoint(appwriteEndpointReplica),
+);
+
 // for documents
 final _databaseProvider =
     Provider<Database>((ref) => Database(ref.read(_clientProvider)));
+
+final _databaseProviderReplica =
+    Provider<Database>((ref) => Database(ref.read(_clientProviderReplica)));
 
 // for auth
 final _accountProvider = Provider<Account>(
   (ref) => Account(ref.read(_clientProvider)),
 );
 
+final _accountProviderReplica = Provider<Account>(
+  (ref) => Account(ref.read(_clientProvider)),
+);
+
 // for reacting to real-time changes that happen in the database
 final _realtimeProvider =
     Provider<Realtime>((ref) => Realtime(ref.read(_clientProvider)));
+
+final _realtimeProviderReplica =
+    Provider<Realtime>((ref) => Realtime(ref.read(_clientProviderReplica)));

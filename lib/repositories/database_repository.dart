@@ -71,6 +71,7 @@ class DatabaseRepository with RepositoryExceptionMixin {
   // Private method to get the document by id from the database
   Future<DocumentPageData> _getPage(String documentId) async {
     // get the document from database
+    // TODO: read from both databases, check if one up, read else check the other
     final doc = await _database.getDocument(
       collectionId: CollectionNames.pages,
       documentId: documentId,

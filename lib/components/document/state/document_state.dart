@@ -26,12 +26,12 @@ class DocumentState extends ControllerStateBase {
   final bool isSavedRemotely;
   final bool isOffline;
 
-// pass the id and the error message, because we don't want the document
-// to be reactive when the quill document or controller changes
+  // pass the id and the error message, because we don't want the document
+  // to be reactive when the quill document or controller changes
   @override
   List<Object?> get props => [id, error];
 
-// used to update the state easily
+  // used to update the state easily
   @override
   DocumentState copyWith({
     String? id,
