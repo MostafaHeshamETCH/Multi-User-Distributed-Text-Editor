@@ -1,28 +1,50 @@
-# multi_user_distributed_text_editor
+# Multi-User Text Editor - Distributed Computing Final Project
 
-A trial to implement a multi-user distributed text editor.
+This project is a multi-user distributed text editor to design and implement a distributed system. The text editor should allow multiple users to create real-time edits to the document. The text editor allows a single document to be distributed across several nodes for editing and viewing.
 
-Implemented By:
+![GIF of the multi-user text editor](https://i.ibb.co/smgkf9C/multi-user-text-editor.gif)
+
+## View Hosted Client and Server
+
+1. Client hosted through [Firebase Hosting](https://firebase.google.com/products/hosting?gclid=CjwKCAjw5NqVBhAjEiwAeCa97biZkz2as1yZ21Zx3KkH-UUG0use8aQ6Z7wXAvE5gY_i6ZMNP1cYfhoCwDoQAvD_BwE&gclsrc=aw.ds) on the following [link](https://multiusertexteditor.web.app/#/document/7323631e-c01d-4f36-81fb-73c5a3ed0230).
+2. Server hosted through [DigitalOcean](https://www.digitalocean.com/) on the following [link](http://etch-da.live/).
+
+## Installation (Compile and Run Code Locally)
+
+1. Go to [Flutter Website](https://docs.flutter.dev/get-started/install) to install Flutter.
+2. Then download the project from [Github Link](https://github.com/MostafaHeshamETCH/Multi-User-Distributed-Text-Editor) or get it from the provided .zip folder.
+3. Open the folder on VS Code or Android Studio and write the following command to run the client-side.
+   ```bash
+   flutter run -d chrome
+   ```
+4. Download and install [Docker](https://www.docker.com/).
+5. Run the following command to run the needed [AppWrite](https://appwrite.io/docs/installation) Containers.
+   ```bash
+   docker run -it --rm \
+   --volume /var/run/docker.sock:/var/run/docker.sock \
+   --volume "$(pwd)"/appwrite:/usr/src/code/appwrite:rw \
+   --entrypoint="install" \
+   appwrite/appwrite:0.14.2
+   ```
+6. Or manually using Docker compose
+   ```bash
+   docker-compose up -d --remove-orphans
+   ```
+7. Create a new project from the locally hosted dashboard
+8. Create two collections
+   - delta with attributes delta, userId, and device all as strings.
+   - pages with attributes title, content, and owner all as strings.
+9. Click open document, and a new document with a unique id will be created for you, share the link with other contributors and enjoy collaborative text editing.
+
+## Built with
+
+1. [AppWrite](https://appwrite.io/) for both MariaDB and real-time database capabilities.
+2. [Flutter QuillEditor](https://pub.dev/packages/flutter_quill) as a UI for the text editor.
+3. [Riverpod](https://riverpod.dev/) for full state management and local caching.
+4. [Routemaster](https://pub.dev/packages/routemaster) for proper routing.
+
+## Contributors
 
 1. Maryam Ahmed Glal
 2. Youssef Sherif Mohamed
 3. Mostafa Hesham Abd El Raouf
-
-## Getting Started
-
-Requirements
-Since this is a course in distributed systems, we want it to have “interesting” features from a systems perspective. Here are some important properties your system should have:
-• The system must support multiple, autonomous agents (either human or automated) contending for shared resources and performing real-time updates to some form of shared state.
-• The state of the system should be distributed across multiple client or server nodes.
-• The system should be robust
-• The system should be able to continue operation even if one of the participant nodes crashes.
-• It should be possible to recover the state of a node following a crash, so that it can resume operation.
-• You may use any of the packages in the Python (or comparable packages in whatever language you choose.)
-• You are allowed to use external packages to support the application or user interface.
-
-## Will probably use
-
-1. AppWrite for real time database features
-2. QuillEditor as a UI for the text editor
-3. Riverpod for state management
-4. Routemaster for Routing
