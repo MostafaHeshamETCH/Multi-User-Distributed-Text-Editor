@@ -49,6 +49,6 @@ This project is a multi-user distributed text editor to design and implement a d
 
 ## Contributors
 
-1. Maryam Ahmed Glal
+1. Maryam Ahmed Nouh
 2. Youssef Sherif Mohamed
 3. Mostafa Hesham Abd El Raouf
