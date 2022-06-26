@@ -4,6 +4,10 @@ This project is a multi-user distributed text editor to design and implement a d
 
 ![GIF of the multi-user text editor](https://i.ibb.co/smgkf9C/multi-user-text-editor.gif)
 
+## Demo Video
+
+[Click here to open](https://drive.google.com/file/d/13hinGg6YV8bP0IruyV6edTkANTsm7YAX/view?usp=sharing)
+
 ## View Hosted Client and Server
 
 1. Client hosted through [Firebase Hosting](https://firebase.google.com/products/hosting?gclid=CjwKCAjw5NqVBhAjEiwAeCa97biZkz2as1yZ21Zx3KkH-UUG0use8aQ6Z7wXAvE5gY_i6ZMNP1cYfhoCwDoQAvD_BwE&gclsrc=aw.ds) on the following [link](https://multiusertexteditor.web.app/#/document/7323631e-c01d-4f36-81fb-73c5a3ed0230).
